@@ -48,11 +48,12 @@ test.describe('Buying products', () => {
     apiClient = new ApiClient(request);
   });
     
-   test.only('add two products at the cart', async()=>{
+   test.only('add two products at the cart', async({page})=>{
      await apiClient.addProductsToCart(
     'existing_user',                                    
     'phone',                                            
-    ['Samsung galaxy s6', 'HTC One M9']          
+    ['Samsung galaxy s6', 'HTC One M9'],
+    page      
   );
   });
    
