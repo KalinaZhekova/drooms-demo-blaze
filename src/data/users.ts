@@ -1,5 +1,8 @@
-const pwd = process.env.TEST_PASSWORD || 'default_test_pwd';
+import dotenv from 'dotenv';
 
+// Load .env file
+dotenv.config();
+const pwd = (process.env.TEST_PASSWORD as string) || 'default_test_pwd';
 
 export const users: Users = {    
     existing_user: {

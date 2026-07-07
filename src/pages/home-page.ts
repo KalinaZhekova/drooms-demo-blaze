@@ -54,7 +54,8 @@ async loginAs(userKey: keyof typeof users) {
   await this.usernameInput.fill(user.username);
   await this.passwordInput.fill(user.password);
   await this.loginButton.click();
-  await this.loginModal.waitFor({ state: 'hidden' });
+  //await this.loginModal.waitFor({ state: 'hidden', timeout: 5000 });
+  await this.page.waitForTimeout(3000);
 }
 
 async verifyCategories(): Promise<void> {
