@@ -24,7 +24,7 @@ export class HomePage extends BasePage {
         super(page); 
         this.page = page; 
         // Get all cards
-        this.productCards = page.locator('div.card.h-100');
+        this.productCards = page.locator('div.card');
         // Get all price tags
         this.priceElements = page.locator('div.card.h-100 h5');
         this.phonesCategory = page.locator('a.list-group-item', { hasText: 'Phones' });
@@ -35,7 +35,7 @@ export class HomePage extends BasePage {
         this.loginModal = page.locator('#logInModal');
         this.usernameInput = page.locator('#loginusername');
         this.passwordInput = page.locator('#loginpassword');
-        this.loginButton = this.loginModal.locator('button:has-text("Log in")');
+        this.loginButton = this.loginModal.locator('button[onclick="logIn()"]');
         this.addToCartButton = page.locator('a', { hasText: 'Add to cart'})
         this.homePageUrl = `${config.baseUrl}`;       
       }
@@ -44,29 +44,30 @@ async openHomePage(): Promise<void> {
     await this.navigate(this.homePageUrl);
   }
 
-async loginAs(userKey: keyof typeof users) {
+async loginAs(userKey: keyof typeof users): Promise<void> {
   const user: User = users[userKey];
-
-  this.page.on('dialog', dialog => dialog.accept());
 
   await this.loginLink.click();
   await expect(this.loginModal).toBeVisible();
   await this.usernameInput.fill(user.username);
   await this.passwordInput.fill(user.password);
-  await this.loginButton.click();
-  //await this.loginModal.waitFor({ state: 'hidden', timeout: 5000 });
-  await this.page.waitForTimeout(3000);
+  await this.loginButton.click();  
+  await this.page.keyboard.press('Enter');
+  await expect(this.loginModal).toBeHidden();
 }
 
-async verifyCategories(): Promise<void> {
-  // Verify each category is visible (hasText already validates the name)
-  await expect(this.phonesCategory).toBeVisible();
-  await expect(this.laptopsCategory).toBeVisible();
-  await expect(this.monitorsCategory).toBeVisible();  
-  // Verify exactly 3 categories exist
-  await expect(this.categoryItems).toHaveCount(3);
-
-    }
+async verifyCategories(categories: string[]): Promise<void> {
+  // Verify each category in the list is visible
+  for (const categoryName of categories) {
+    const categoryLocator = this.page.locator('a.list-group-item', { hasText: categoryName });
+    await expect(categoryLocator).toBeVisible();
+    console.log(`✓ Category '${categoryName}' is visible`);
+  }
+  
+  // Verify the count matches the list length
+  await expect(this.categoryItems).toHaveCount(categories.length);
+  console.log(`✓ Found ${categories.length} categories`);
+}
 
 async verifyAllCardsHavePrices(): Promise<void> {    
   const cardCount = await this.productCards.count();
@@ -80,7 +81,7 @@ async verifyAllCardsHavePrices(): Promise<void> {
     
     const priceText = await price.textContent();
     expect(priceText?.trim()).toBeTruthy();
-    console.log(`✓ Card ${i + 1} has price: ${priceText}`);
+    //console.log(`✓ Card ${i + 1} has price: ${priceText}`);
   }
     }
 
@@ -98,13 +99,10 @@ async clickItem(productId: number, productName: string): Promise<void> {
 
 async addToCart(message: string): Promise<void> {
   const dialogPromise = this.page.waitForEvent('dialog');
-
   await this.addToCartButton.click();
-
   const dialog = await dialogPromise;
   expect(dialog.message()).toBe(message);
   await dialog.accept();
 }
-
 
 }

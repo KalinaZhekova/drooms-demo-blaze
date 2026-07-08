@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './src/tests',
@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: 'html',  
   use: {
     browserName: 'chromium',
-    headless: false
+    headless: true
     //browserName: 'firefox'
   }
 });

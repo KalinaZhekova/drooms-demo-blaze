@@ -1,12 +1,12 @@
-import { test, expect } from '@playwright/test';
-import { ApiClient } from '../api/api-client';
+import { test, expect} from '@playwright/test';
+import { ApiClient } from '../api/clients/api-client';
 import { categories } from '../data/categories';
-import { request } from 'node:http';
+import { ShoppingService } from '../api/services/shopping-service';
 
 
 test.describe('Returned entries', () => {
   
-  test('entries end point returns 9 items', async ({ request }) => {
+  test('Verify entries end point returns 9 items', async ({ request }) => {
     const apiClient = new ApiClient(request);
     const response = await apiClient.getEntries();
     
@@ -24,7 +24,7 @@ test.describe('Category filtering', () => {
     apiClient = new ApiClient(request);
   });
 
-  test('correct number of items per category is returned', async () => {
+  test('Correct number of items per category is returned', async () => {
   for (const { category, expectedCount } of categories) {   
 
     const response = await apiClient.getEntriesByCategory(category);
@@ -42,18 +42,20 @@ test.describe('Category filtering', () => {
 });
 
 test.describe('Buying products', () => {
+    let shoppingService: ShoppingService;
     let apiClient: ApiClient;
 
-  test.beforeEach(async ({ request }) => {
+  test.beforeEach(async ({ request, page }) => {
     apiClient = new ApiClient(request);
+    shoppingService = new ShoppingService(apiClient, page); 
   });
     
-   test.only('add two products at the cart', async({page})=>{
-     await apiClient.addProductsToCart(
+   test('Adding two products at the cart', async()=>{
+     await shoppingService.addProductsToCart(
     'existing_user',                                    
     'phone',                                            
     ['Samsung galaxy s6', 'HTC One M9'],
-    page      
+       
   );
   });
    

@@ -2,12 +2,12 @@ import dotenv from 'dotenv';
 
 // Load .env file
 dotenv.config();
-const pwd = (process.env.TEST_PASSWORD as string) || 'default_test_pwd';
+const pwd = (process.env.TEST_PASSWORD as string) || 'Password#2026';
 
 export const users: Users = {    
     existing_user: {
       username: 'fwo.beta.28@gmail.com',
-      password: pwd
+      password: 'Password#2026'//pwd
     }
 
 

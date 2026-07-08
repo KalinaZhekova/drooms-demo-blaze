@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
+    "test:full": "playwright test && npm run test:report",
+    "test:report": "playwright show-report",
     "test:ui": "npx playwright test --ui",
     "test:debug": "npx playwright test --debug"
   },
