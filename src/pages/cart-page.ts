@@ -29,9 +29,7 @@ async getDeleteLinksCount(): Promise<number> {
 async deleteAllItems(): Promise<void> {
   const count = await this.getDeleteLinksCount();  
   // Get initial count of delete links
-  let deleteLinks = this.page.getByRole('link', { name: 'Delete' });
-  //let count = await deleteLinks.count();  
-  //console.log(`Found ${count} items to delete`);  
+  let deleteLinks = this.page.getByRole('link', { name: 'Delete' }); 
   // Click each delete link
   for (let i = 0; i < count; i++) {
     deleteLinks = this.page.getByRole('link', { name: 'Delete' });    

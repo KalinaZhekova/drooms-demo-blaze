@@ -65,7 +65,7 @@ export class ApiClient {
     const response = await this.request.post(`${config.apiBaseUrl}/login`, {
       data: {
         username: user.username,
-        password: encodedPassword//'UGFzc3dvcmQjMjAyNg=='
+        password: encodedPassword
       }
     });
 
